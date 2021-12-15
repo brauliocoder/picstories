@@ -1,5 +1,6 @@
 class StoriesController < ApplicationController
   before_action :set_story, only: [:show, :edit, :update, :destroy]
+  before_action :require_permission, only: [:edit, :update, :destroy]
 
   # GET /stories
   # GET /stories.json
@@ -24,7 +25,7 @@ class StoriesController < ApplicationController
   # POST /stories
   # POST /stories.json
   def create
-    @story = Story.new(story_params)
+    @story = Story.new(story_params.merge(user_id: current_user.id))
 
     respond_to do |format|
       if @story.save
@@ -70,5 +71,13 @@ class StoriesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def story_params
       params.require(:story).permit(:title, :picture, :content)
+    end
+
+    def require_permission
+      if not current_user.admin
+        if current_user != @story.user
+          redirect_to root_path
+        end
+      end
     end
 end
