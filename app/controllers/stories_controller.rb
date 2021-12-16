@@ -1,4 +1,5 @@
 class StoriesController < ApplicationController
+  before_action :loged_in?, only: [:edit, :update, :destroy]
   before_action :set_story, only: [:show, :edit, :update, :destroy]
   before_action :require_permission, only: [:edit, :update, :destroy]
 
@@ -6,6 +7,10 @@ class StoriesController < ApplicationController
   # GET /stories.json
   def index
     @stories = Story.all
+  end
+
+  def picstories
+    @stories = Story.where(user: current_user)
   end
 
   # GET /stories/1
@@ -78,6 +83,12 @@ class StoriesController < ApplicationController
         if current_user != @story.user
           redirect_to root_path
         end
+      end
+    end
+
+    def loged_in?
+      if current_user.nil?
+        redirect_to root_path
       end
     end
 end

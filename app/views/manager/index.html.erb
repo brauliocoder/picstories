@@ -1,0 +1,28 @@
+<table class="table">
+  <thead>
+       <tr>
+         <th>Name</th>
+         <th>Email</th>
+         <th>Admin</th>
+       </tr>
+     </thead>
+     <tbody>
+       <% @users.each do |user|%>
+        <tr>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <td>
+          <% if user != current_user %>
+            <%= link_to users_path(user), method: :patch do %>
+              <% if user.admin %>
+                <button type="button" class="btn btn-warning btn-xs">quitar admin</button>
+              <% else %>
+                <button type="button" class="btn btn-default btn-xs">hacer admin</button>
+              <% end %>
+            <% end %>
+          <% end %>
+          </td>
+        </tr>
+      </tbody>
+      <% end %>
+</table>
